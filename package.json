@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "dotenv": "^16.4.7",
+    "whatsapp-web.js": "^1.23.0"
+  }
+}
