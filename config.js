@@ -5,7 +5,7 @@ const msgQRScan = '🤖🔑 *Scan the QR code* with WhatsApp on your phone to co
 const msgBotReady = '🚀✅ *Bot is online and ready to assist you!*';
 
 // DO NOT CHANGE NO MATTER WHAT: Variables for Locations
-const lc1 = { name: "Leadway Nugegoda", link: "https://maps.app.goo.gl/iLGpYLoByNfJiBQ58" };
+const lc1 = "Leadway Nugegoda\n\nhttps://maps.app.goo.gl/iLGpYLoByNfJiBQ58";
 const lc2 = { name: "Sipelka Gampaha", link: "https://maps.app.goo.gl/bXzcFTQoBTGTaJgL8" };
 const lc3 = { name: "Sipwin Kurunegala", link: "https://maps.app.goo.gl/nryZyCLZKE91P4zWA" };
 const lc4 = { name: "Ozone Matara", link: "https://maps.app.goo.gl/9wi9JkLxybzvogrY8" };

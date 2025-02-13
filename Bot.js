@@ -1,6 +1,7 @@
 const { Client, MessageMedia } = require('whatsapp-web.js');
 const qrcode = require('qrcode-terminal');
 const logger = require('./logger');
+const fs = require('fs');
 const { 
     img1, img2, img3, img4, img5, img6, img7, img8, img9, img10, img11, img12, img13, img14, img15, 
     img16, img17, img18, img19, img20, img21, img22, img23, img24, img25, img26, img27, img28, img29, img30,
@@ -67,7 +68,7 @@ client.on('message', async (message) => {
             console.log("\n💀 Bot shutting down...");
         
             // Send shutdown message first
-            await client.sendMessage(userId, "💀 Bot is shutting down...");
+            await client.sendMessage(userId, "_💀 Bot is shutting down..._");
         
             // Exit after sending the message
             setTimeout(() => {
@@ -81,15 +82,15 @@ client.on('message', async (message) => {
             const startTime = new Date(Date.now() - uptime * 1000).toLocaleString();
 
             const infoMessage = `🟢 *Bot Status*\n\n`
-                + `📅 *Session Start:* ${startTime}\n`
-                + `⏳ *Uptime:* ${Math.floor(uptime / 60)} min ${Math.floor(uptime % 60)} sec\n`
-                + `✅ *Bot is Online*`;
+                + `📅 *_Session Started:_* ${startTime}\n`
+                + `⏳ *_Uptime:_* ${Math.floor(uptime / 60)} min ${Math.floor(uptime % 60)} sec\n`
+                + `✅ *_Bot is Alive..._*`;
 
             await client.sendMessage(userId, infoMessage);
             console.log("\nℹ️ Info command executed - Sent bot status.");
-            console.log(`📅 Session Start: ${startTime}`);
+            console.log(`📅 Session Started: ${startTime}`);
             console.log(`⏳ Uptime: ${Math.floor(uptime / 60)} min ${Math.floor(uptime % 60)} sec`);
-            console.log(`✅ Bot is Online`);
+            console.log(`✅ Bot is Alive...`);
             return; // ✅ Stops further processing to prevent error()
         }
     }
@@ -128,7 +129,9 @@ client.on('message', async (message) => {
                     'dsc1', 'dsc2', 'dsc3', 'dsc4', 'dsc5', 'dsc6', 'dsc7', 'dsc8', 'dsc9', 'dsc10',
                     'dsc11', 'dsc12', 'dsc13', 'dsc14', 'dsc15', 'dsc16', 'dsc17', 'dsc18', 'dsc19', 'dsc20'
                 ];
-    
+                if (msg.startsWith('lc')) {
+                    formattedMessages.push(msg);
+                }    
                 if (formattedMessages.includes(msg)) {
                     content = formatMessage(content);
                 }
@@ -137,11 +140,11 @@ client.on('message', async (message) => {
                 if (msg.startsWith('img') || msg.startsWith('vid') || msg.startsWith('aud')) {
                     if (fs.existsSync(content)) {
                         const media = MessageMedia.fromFilePath(content);
-                        await client.sendMessage(message.from, media, { caption: eval(`dsc${msg.slice(3)}`) || '' });
+                        await client.sendMessage(message.from, media);
                     } else {
-                        let fileType = msg.startsWith('img') ? "⚠️ _This image is missing_" :
-                                       msg.startsWith('vid') ? "⚠️ _This video is missing_" :
-                                       msg.startsWith('aud') ? "⚠️ _This audio is missing_" : "⚠️ _File is missing_";
+                        let fileType = msg.startsWith('img') ? "⚠️ _This image is missing..._" :
+                                       msg.startsWith('vid') ? "⚠️ _This video is missing..._" :
+                                       msg.startsWith('aud') ? "⚠️ _This audio is missing..._" : "⚠️ _File is missing..._";
                         await client.sendMessage(message.from, fileType);
                         console.warn(`⚠️ Missing file: ${msg}`);
                     }
@@ -151,19 +154,19 @@ client.on('message', async (message) => {
                         const media = new MessageMedia("text/vcard", Buffer.from(vCardData).toString("base64"), `${msg}.vcf`);
                         await client.sendMessage(message.from, media);
                     } else {
-                        await client.sendMessage(message.from, "⚠️ _This contact is missing_");
+                        await client.sendMessage(message.from, "⚠️ _This contact is missing..._");
                         console.warn(`⚠️ Missing contact: ${msg}`);
                     }
                 } else {
                     await client.sendMessage(message.from, content);
                 }
             } else {
-                let missingType = msg.startsWith('img') ? "⚠️ _This image is missing_" :
-                                  msg.startsWith('vid') ? "⚠️ _This video is missing_" :
-                                  msg.startsWith('aud') ? "⚠️ _This audio is missing_" :
-                                  msg.startsWith('con') ? "⚠️ _This contact is missing_" :
-                                  msg.startsWith('txt') || msg.startsWith('dsc') || msg.startsWith('mn') ? 
-                                  "⚠️ _This text is missing_" : "⚠️ _Unknown missing content_";
+                let missingType = msg.startsWith('img') ? "⚠️ _This image is missing..._" :
+                                  msg.startsWith('vid') ? "⚠️ _This video is missing..._" :
+                                  msg.startsWith('aud') ? "⚠️ _This audio is missing..._" :
+                                  msg.startsWith('con') ? "⚠️ _This contact is missing..._" :
+                                  msg.startsWith('txt') || msg.startsWith('dsc') || msg.startsWith('lc') || msg.startsWith('mn') ? 
+                                  "⚠️ _This text is missing..._" : "⚠️ _This content is missing..._";
     
                 await client.sendMessage(message.from, missingType);
                 console.warn(`⚠️ Missing content: ${msg}`);
@@ -230,25 +233,25 @@ client.on('message', async (message) => {
                 return;
     
             case "2": case "02": case "two": case "දෙක":
-                await client.sendMessage(message.from, MessageMedia.fromFilePath(img22), { caption: txt3 });
-                console.log(`Bot Output: img22, con1, txt4`);
+                await client.sendMessage(message.from, MessageMedia.fromFilePath(img23), { caption: txt3 });
+                console.log(`Bot Output: img23, con1, txt4`);
                 await sendMessage('con1');
                 await sendMessage('txt4');
                 userSession[userId].menu = null;  // Reset session
                 return;
     
             case "3": case "03": case "three": case "තුන":
-                await client.sendMessage(message.from, MessageMedia.fromFilePath(img22), { caption: txt14 });
-                console.log(`Bot Output: img22, con1, txt4`);
+                await client.sendMessage(message.from, MessageMedia.fromFilePath(img23), { caption: txt14 });
+                console.log(`Bot Output: img23, con1, txt4`);
                 await sendMessage('con1');
                 await sendMessage('txt4');
                 userSession[userId].menu = null;
                 return;
     
             case "4": case "04": case "four": case "හතර":
-                await client.sendMessage(message.from, MessageMedia.fromFilePath(img24), { caption: txt2 });
-                console.log(`Bot Output: img24, img25, img26, txt4`);
-                await sendMessage('img25', 'img26', 'txt4');
+                await client.sendMessage(message.from, MessageMedia.fromFilePath(img25), { caption: txt2 });
+                console.log(`Bot Output: img25, img26, img27, txt9, txt4`);
+                await sendMessage('img26', 'img27', 'txt9', 'txt4');
                 userSession[userId].menu = null;
                 return;
     
@@ -311,26 +314,30 @@ client.on('message', async (message) => {
     if (userSession[userId].menu === "mn4") {
         switch (text) {
             case "1": case "01": case "one": case "එක":
-                await client.sendMessage(message.from, MessageMedia.fromFilePath(img20), { caption: lc1 });
-                console.log(`Bot Output: img20, lc1`);
+                await client.sendMessage(message.from, MessageMedia.fromFilePath(img21), { caption: lc1 });
+                await sendMessage('txt4');
+                console.log(`Bot Output: img21, lc1, txt4`);
                 userSession[userId].menu = null;  // Reset session
                 return;
     
             case "2": case "02": case "two": case "දෙක":
-                await client.sendMessage(message.from, MessageMedia.fromFilePath(img18), { caption: txt13 });
-                console.log(`Bot Output: img18, txt13`);
+                await client.sendMessage(message.from, MessageMedia.fromFilePath(img19));
+                await sendMessage('txt4');
+                console.log(`Bot Output: img19, txt4`);
                 userSession[userId].menu = null;  // Reset session
                 return;
     
             case "3": case "03": case "three": case "තුන":
-                await client.sendMessage(message.from, MessageMedia.fromFilePath(img19), { caption: txt13 });
-                console.log(`Bot Output: img19, txt13`);
+                await client.sendMessage(message.from, MessageMedia.fromFilePath(img20), { caption: txt13 });
+                await sendMessage('txt4');
+                console.log(`Bot Output: img20, txt13, txt4`);
                 userSession[userId].menu = null;  // Reset session
                 return;
     
             case "4": case "04": case "four": case "හතර":
-                await client.sendMessage(message.from, MessageMedia.fromFilePath(img17), { caption: txt13 });
-                console.log(`Bot Output: img17, txt13`);
+                await client.sendMessage(message.from, MessageMedia.fromFilePath(img18), { caption: txt13 });
+                await sendMessage('txt4');
+                console.log(`Bot Output: img18, txt13, txt4`);
                 userSession[userId].menu = null;  // Reset session
                 return;
     
