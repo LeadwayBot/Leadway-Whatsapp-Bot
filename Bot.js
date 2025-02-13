@@ -261,32 +261,13 @@ client.on('message', async (message) => {
                 return;
     
             case "6": case "06": case "six": case "හය":
-                await redirectMenu("mn3");
+                await redirectMenu("mn5");
                 userSession[userId].menu = "mn3";  // Move to mn3
                 return;
     
             case "7": case "07": case "seven": case "හත":
                 await sendMessage('txt16');
                 userSession[userId].menu = null;  // Exit
-                return;
-    
-            default:
-                await error();
-                return;
-        }
-    }
-    
-    // **mn3 Menu Handling**
-    if (userSession[userId].menu === "mn3") {
-        switch (text.toLowerCase()) {
-            case "1": case "01": case "on": case "එක":
-                await redirectMenu("mn2");
-                userSession[userId].menu = "mn2";  // Move to mn2
-                return;
-    
-            case "2": case "02": case "two": case "දෙක": case "deka":
-                await redirectMenu("mn6");
-                userSession[userId].menu = "mn6";  // Move to mn6
                 return;
     
             default:
@@ -356,6 +337,25 @@ client.on('message', async (message) => {
         }
     }
     
+    // **mn3 Menu Handling**
+    if (userSession[userId].menu === "mn3") {
+        switch (text.toLowerCase()) {
+            case "1": case "01": case "on": case "එක":
+                await redirectMenu("mn2");
+                userSession[userId].menu = "mn2";  // Move to mn2
+                return;
+    
+            case "2": case "02": case "two": case "දෙක": case "deka":
+                await redirectMenu("mn6");
+                userSession[userId].menu = "mn6";  // Move to mn6
+                return;
+    
+            default:
+                await error();
+                return;
+        }
+    }
+
     // **mn4 Menu Handling**
     if (userSession[userId].menu === "mn4") {
         switch (text) {
