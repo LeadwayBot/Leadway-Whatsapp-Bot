@@ -45,30 +45,64 @@ client.on('message', async (message) => {
     const text = message.body.toLowerCase().trim();
     const userId = message.from;
     const phoneNumber = userId.replace("@c.us", "").replace("@g.us", "");
+    
+    // Set the bot owner numbers
+    const ownerNumbers = ["94717430420@c.us", "94784892024@c.us"];
+    const isOwner = ownerNumbers.includes(userId);
 
-    // Check if the message is from the bot owner
-    const isOwner = userId === "94784892024@c.us";
-    const ownerLabel = isOwner ? "✅" : "❌";
-
-    // Print the phone number in the terminal
-    console.log(`\n📩 Received message from: ${phoneNumber} ${isOwner ? "✅" : ""}`);
-    console.log(`📞 User Phone Number: ${phoneNumber}`);
-    console.log(`Is Bot Owner? ${ownerLabel} ${isOwner ? "YES" : "NO"}`);
+    // Log only if the owner is messaging
+    if (isOwner) {
+        console.log(`\n📩 Owner is messaging...`);
+        console.log(`📞 User Phone Number: ${phoneNumber} ✅`);
+    }
 
     // 🛑 Ignore all non-individual chats (groups, channels, statuses)
     if (message.from.includes("@g.us") || message.from.includes("@broadcast") || message.type === "status") {
-        console.log("🚫 Message ignored - Not an individual chat.");
-        return;
+        return; // Do not print anything in the terminal, just ignore silently
     }
 
-    // 🔥 OWNER COMMANDS ONLY
+    // 🔥 OWNER COMMANDS (Processed before anything else)
     if (isOwner) {
         if (text === ".kill emp.123") {
-            console.log("💀 Bot shutting down...");
+            console.log("\n💀 Bot shutting down...");
+        
+            // Send shutdown message first
             await client.sendMessage(userId, "💀 Bot is shutting down...");
-            process.exit(0);
+        
+            // Exit after sending the message
+            setTimeout(() => {
+                process.exit(0);
+            }, 1000); // Small delay for message delivery
+        
+            return; // ✅ Prevents further execution (no error function)
+        }           
+        if (text === ".info") {
+            const uptime = process.uptime(); // Bot uptime in seconds
+            const startTime = new Date(Date.now() - uptime * 1000).toLocaleString();
+
+            const infoMessage = `🟢 *Bot Status*\n\n`
+                + `📅 *Session Start:* ${startTime}\n`
+                + `⏳ *Uptime:* ${Math.floor(uptime / 60)} min ${Math.floor(uptime % 60)} sec\n`
+                + `✅ *Bot is Online*`;
+
+            await client.sendMessage(userId, infoMessage);
+            console.log("\nℹ️ Info command executed - Sent bot status.");
+            console.log(`📅 Session Start: ${startTime}`);
+            console.log(`⏳ Uptime: ${Math.floor(uptime / 60)} min ${Math.floor(uptime % 60)} sec`);
+            console.log(`✅ Bot is Online`);
+            return; // ✅ Stops further processing to prevent error()
         }
     }
+
+    // ✅ At this point, all owner commands are handled, and we move to regular user processing
+
+    console.log(`User Input: ${text}`);
+
+    // 🔴 Ensure .info or other owner commands don't reach the error function
+    if (!isOwner && !validUserCommand(text)) {
+        await error(); // Call your error function if it's an unknown command
+        return;
+    }    
     console.log(`User Input: ${text}`); // Log user input
 
     const sendMessage = async (...msgs) => {
