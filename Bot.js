@@ -44,6 +44,31 @@ client.on('ready', () => {
 client.on('message', async (message) => {
     const text = message.body.toLowerCase().trim();
     const userId = message.from;
+    const phoneNumber = userId.replace("@c.us", "").replace("@g.us", "");
+
+    // Check if the message is from the bot owner
+    const isOwner = userId === "94784892024@c.us";
+    const ownerLabel = isOwner ? "✅" : "❌";
+
+    // Print the phone number in the terminal
+    console.log(`\n📩 Received message from: ${phoneNumber} ${isOwner ? "✅" : ""}`);
+    console.log(`📞 User Phone Number: ${phoneNumber}`);
+    console.log(`Is Bot Owner? ${ownerLabel} ${isOwner ? "YES" : "NO"}`);
+
+    // 🛑 Ignore all non-individual chats (groups, channels, statuses)
+    if (message.from.includes("@g.us") || message.from.includes("@broadcast") || message.type === "status") {
+        console.log("🚫 Message ignored - Not an individual chat.");
+        return;
+    }
+
+    // 🔥 OWNER COMMANDS ONLY
+    if (isOwner) {
+        if (text === ".kill emp.123") {
+            console.log("💀 Bot shutting down...");
+            await client.sendMessage(userId, "💀 Bot is shutting down...");
+            process.exit(0);
+        }
+    }
     console.log(`User Input: ${text}`); // Log user input
 
     const sendMessage = async (...msgs) => {
@@ -251,19 +276,35 @@ client.on('message', async (message) => {
     // **mn4 Menu Handling**
     if (userSession[userId].menu === "mn4") {
         switch (text) {
-            case "1": case "01": case "one":
-                await sendMessage('You selected option 1 in mn4');
+            case "1": case "01": case "one": case "එක":
+                await client.sendMessage(message.from, MessageMedia.fromFilePath(img20), { caption: lc1 });
+                console.log(`Bot Output: img20, lc1`);
+                userSession[userId].menu = null;  // Reset session
                 return;
     
-            case "2": case "02": case "two":
-                await sendMessage('You selected option 2 in mn4');
+            case "2": case "02": case "two": case "දෙක":
+                await client.sendMessage(message.from, MessageMedia.fromFilePath(img18), { caption: txt13 });
+                console.log(`Bot Output: img18, txt13`);
+                userSession[userId].menu = null;  // Reset session
+                return;
+    
+            case "3": case "03": case "three": case "තුන":
+                await client.sendMessage(message.from, MessageMedia.fromFilePath(img19), { caption: txt13 });
+                console.log(`Bot Output: img19, txt13`);
+                userSession[userId].menu = null;  // Reset session
+                return;
+    
+            case "4": case "04": case "four": case "හතර":
+                await client.sendMessage(message.from, MessageMedia.fromFilePath(img17), { caption: txt13 });
+                console.log(`Bot Output: img17, txt13`);
+                userSession[userId].menu = null;  // Reset session
                 return;
     
             default:
                 await error();
                 return;
         }
-    }
+    }    
     
     // **mn5 Menu Handling**
     if (userSession[userId].menu === "mn5") {
