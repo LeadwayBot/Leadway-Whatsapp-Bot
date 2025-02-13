@@ -256,13 +256,13 @@ client.on('message', async (message) => {
                 return;
     
             case "5": case "05": case "five": case "පහ":
-                await redirectMenu("mn2");
-                userSession[userId].menu = "mn2";  // Move to mn2
+                await redirectMenu("mn3");
+                userSession[userId].menu = "mn3";  // Move to mn3
                 return;
     
             case "6": case "06": case "six": case "හය":
-                await redirectMenu("mn5");
-                userSession[userId].menu = "mn5";  // Move to mn5
+                await redirectMenu("mn3");
+                userSession[userId].menu = "mn3";  // Move to mn3
                 return;
     
             case "7": case "07": case "seven": case "හත":
@@ -276,15 +276,17 @@ client.on('message', async (message) => {
         }
     }
     
-    // **mn2 Menu Handling**
-    if (userSession[userId].menu === "mn2") {
-        switch (text) {
-            case "1":
-                await sendMessage('You selected option 1 in mn2');
+    // **mn3 Menu Handling**
+    if (userSession[userId].menu === "mn3") {
+        switch (text.toLowerCase()) {
+            case "1": case "01": case "on": case "එක":
+                await redirectMenu("mn2");
+                userSession[userId].menu = "mn2";  // Move to mn2
                 return;
     
-            case "2":
-                await sendMessage('You selected option 2 in mn2');
+            case "2": case "02": case "two": case "දෙක": case "deka":
+                await redirectMenu("mn6");
+                userSession[userId].menu = "mn6";  // Move to mn6
                 return;
     
             default:
@@ -293,20 +295,64 @@ client.on('message', async (message) => {
         }
     }
     
-    // **mn3 Menu Handling**
-    if (userSession[userId].menu === "mn3") {
-        switch (text) {
-            case "1":
-                await sendMessage('You selected option 1 in mn3');
-                return;
+    // **mn2 Menu Handling**
+    if (userSession[userId].menu === "mn2") {
+        // Convert input text to lowercase and split words
+        const words = text.trim().toLowerCase().split(/[\s,]+/);    
+        // Define keyword mappings
+        const menuOptions = [
+            { keywords: ["1", "01", "on", "එක", "econ", "economics", "ඉකෝන්", "ඉකොන්", "ආර්ථික", "ආර්ථික විද්‍යාව"], img: img15, desc: dsc15 },
+            { keywords: ["2", "02", "two", "දෙක", "deka", "bs", "business", "bsuiness", "bisness", "business studies", "ව්‍යාපාර", "වියාපාර", "ව්‍යාපාර අද්‍යයනය", "ව්‍යාපාර අධ්‍යයනය"], img: img16, desc: dsc16 },
+            { keywords: ["3", "03", "three", "තුන", "thuna", "tuna", "accounting", "acc", "ගිණුම්කරණය", "ගිනුම්කරනය"], img: img17, desc: dsc17 },
+            { keywords: ["4", "04", "four", "හතර", "hathara", "hatara", "ict", "i.c.t", "it", "itc", "අයි සී ටී", "i.ct.", "i c t", "information and communication technology", "information communication", "information and communication", "අයි.සී.ටී.", "අයි.සී.ටී", "අයිසීටී", "අයි ටී සී", "අයි.ටී.සී.", "අයි.ටී.සී", "තොරතුරු තාක්ෂණය", "තොරතුරු හා සන්නිවේදන", "තොරතුරු හා සන්නිවේදන තාක්ෂණය"], img: img13, desc: dsc13 },
+            { keywords: ["5", "05", "five", "paha", "පහ", "bc", "බීසී", "b.c.", "b.c", "බී.සී.", "බී.සී.", "බවුද්ද", "බෞද්ද", "බෞද්ධ", "බෞද්ධ ශිෂ්ඨාචාරය", "buddhist", "budhist", "budist", "buddhist civilization", "civilization"], img: img4, desc: dsc4 },
+            { keywords: ["6", "06", "six", "හය", "haya", "history", "histry", "ඉතිහාසය", "හිස්ට්‍රි"], img: img11, desc: dsc11 },
+            { keywords: ["7", "07", "seven", "හත", "hatha", "hata", "media", "medea", "මීඩියා", "මිඩියා", "මීඩිය", "මිඩිය"], img: img6, desc: dsc6 },
+            { keywords: ["8", "08", "eight", "අට", "ata", "political", "political science", "දේශපාලන විද්‍යාව", "දේශපාලන", "දේසපාලන"], img: img8, desc: dsc8 },
+            { keywords: ["9", "09", "nine", "නවය", "නමය", "namaya", "geography", "geogrophy", "geogropy", "geograpy", "බූගෝලය", "භූගෝලය", "බුගෝලය", "බූගොලට", "බුගොලය", "භුගොලය", "භුගෝලය"], img: img12, desc: dsc12 },
+            { keywords: ["10", "ten", "dahaya", "දහය", "ඇග්‍රි", "ඇගි", "ඇග්‍ර්", "ඇග්‍ර", "agree", "agri", "agriculture", "agriculture science", "agre"], img: img9, desc: dsc9 },
+            { keywords: ["11", "eleven", "ekolaha", "එකොලහ", "එකොළහ", "ගෘහ", "ගුහ", "ග්‍ර්හ", "ගෘහ විද්‍යාව", "හෝම්", "හෝම් සයන්ස්", "home", "home science"], img: img7, desc: dsc7 },
+            { keywords: ["12", "dolaha", "twelve", "දොලහ", "දොළහ", "සිංහල", "සින්හල", "sinhala"], img: img10, desc: dsc10 },
+            { keywords: ["13", "dahathuna", "dahatuna", "thirteen", "දහතුන", "දහ තුන", "ලොජික්", "logic", "ලොජක්", "ලොජක", "logc"], img: img5, desc: dsc5 },
+            { keywords: ["14", "dahathara", "dahahathara", "දාහතර", "දහ හතර", "දා හතර", "english", "general english", "general", "ඉංග්ලිෂ්", "ඉංග්‍රීසි", "සාමාන්‍ය", "සාමාන්‍ය ඉංග්‍රීසි"], img: img14, desc: dsc14 }
+        ];
     
-            case "2":
-                await sendMessage('You selected option 2 in mn3');
-                return;
-    
-            default:
-                await error();
-                return;
+        const sentCategories = new Set(); // Track sent images
+        let missingImages = false; // Track if any images are missing
+        
+        for (const option of menuOptions) {
+            if (words.some(word => option.keywords.includes(word))) {
+                if (!sentCategories.has(option.img)) { // Avoid duplicates
+                    try {
+                        if (fs.existsSync(option.img)) {
+                            await client.sendMessage(message.from, MessageMedia.fromFilePath(option.img), { caption: option.desc });
+                            console.log(`✅ Sent: ${option.img}, ${option.desc}`);
+                            sentCategories.add(option.img);
+                        } else {
+                            console.warn(`⚠️ ${option.img} is missing...`);
+                            missingImages = true;
+                        }
+                    } catch (error) {
+                        console.error(`❌ Error sending... ${option.img}:`, error.message);
+                        missingImages = true;
+                    }
+                }
+            }
+        }
+        
+        // If any images were missing, notify the user
+        if (missingImages) {
+            await client.sendMessage(message.from, "_⚠️ This image is missing..._");
+        }
+        
+        // If at least one image was sent, send txt4 before resetting
+        if (sentCategories.size > 0) {
+            await client.sendMessage(message.from, txt4);
+            userSession[userId].menu = null;
+            return;
+        } else {
+            await error();
+            return;
         }
     }
     
@@ -366,23 +412,56 @@ client.on('message', async (message) => {
     
     // **mn6 Menu Handling**
     if (userSession[userId].menu === "mn6") {
-        switch (text) {
-            case "1":
-                await sendMessage('You selected option 1 in mn6');
-                return;
+        // Convert input text to lowercase and split words
+        const words = text.trim().toLowerCase().split(/[\s,]+/);    
+        // Define keyword mappings
+        const menuOptions = [
+            { keywords: ["1", "01", "on", "එක", "econ", "economics", "ඉකෝන්", "ඉකොන්", "ආර්ථික", "ආර්ථික විද්‍යාව"], img: img2, desc: dsc2 },
+            { keywords: ["2", "02", "two", "දෙක", "deka", "bs", "business", "bsuiness", "bisness", "business studies", "ව්‍යාපාර", "වියාපාර", "ව්‍යාපාර අද්‍යයනය", "ව්‍යාපාර අධ්‍යයනය"], img: img1, desc: dsc1 },
+            { keywords: ["3", "03", "three", "තුන", "thuna", "tuna", "accounting", "acc", "ගිණුම්කරණය", "ගිනුම්කරනය"], img: img3, desc: dsc3 },
+            { keywords: ["4", "04", "four", "හතර", "hathara", "hatara", "ict", "i.c.t", "it", "itc", "අයි සී ටී", "i.ct.", "i c t", "information and communication technology", "information communication", "information and communication", "අයි.සී.ටී.", "අයි.සී.ටී", "අයිසීටී", "අයි ටී සී", "අයි.ටී.සී.", "අයි.ටී.සී", "තොරතුරු තාක්ෂණය", "තොරතුරු හා සන්නිවේදන", "තොරතුරු හා සන්නිවේදන තාක්ෂණය"], img: img13, desc: dsc13 },
+            { keywords: ["5", "05", "five", "paha", "පහ", "english", "general english", "general", "ඉංග්ලිෂ්", "ඉංග්‍රීසි", "සාමාන්‍ය", "සාමාන්‍ය ඉංග්‍රීසි"], img: img14, desc: dsc14 }
+        ];
     
-            case "2":
-                await sendMessage('You selected option 2 in mn6');
-                return;
-    
-            default:
-                await error();
-                return;
+        const sentCategories = new Set(); // Track sent images
+        let missingImages = false; // Track if any images are missing
+        
+        for (const option of menuOptions) {
+            if (words.some(word => option.keywords.includes(word))) {
+                if (!sentCategories.has(option.img)) { // Avoid duplicates
+                    try {
+                        if (fs.existsSync(option.img)) {
+                            await client.sendMessage(message.from, MessageMedia.fromFilePath(option.img), { caption: option.desc });
+                            console.log(`✅ Sent: ${option.img}, ${option.desc}`);
+                            sentCategories.add(option.img);
+                        } else {
+                            console.warn(`⚠️ ${option.img} is missing...`);
+                            missingImages = true;
+                        }
+                    } catch (error) {
+                        console.error(`❌ Error sending... ${option.img}:`, error.message);
+                        missingImages = true;
+                    }
+                }
+            }
+        }
+        
+        // If any images were missing, notify the user
+        if (missingImages) {
+            await client.sendMessage(message.from, "_⚠️ This image is missing..._");
+        }
+        
+        // If at least one image was sent, send txt4 before resetting
+        if (sentCategories.size > 0) {
+            await client.sendMessage(message.from, txt4);
+            userSession[userId].menu = null;
+            return;
+        } else {
+            await error();
+            return;
         }
     }
-    
-    // 3️⃣ If input doesn't match any valid menu flow, trigger error
-    await error();
+
 });
 
 client.initialize();
