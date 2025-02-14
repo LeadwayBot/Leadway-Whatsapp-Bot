@@ -195,7 +195,7 @@ module.exports = {
 
     vid1, vid2, vid3, vid4, vid5,
 
-    con1, con22,
+    con1, con2,
 
     formatMessage, getGreeting 
 };
