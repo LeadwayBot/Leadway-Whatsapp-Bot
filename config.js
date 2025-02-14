@@ -62,8 +62,14 @@ const txt15 = "🏆 *ශ්‍රී ලංකාවේ හොඳම පංත�
 const txt16 = "*_Leadway Bot_ සමග සම්බන්ධ වූ ඔබට ස්තුතියි...* 🙏\n\n📝 _හැකිනම් *පන්තිය* හෝ_ *_Bot_* _ගැන ඔබේ_ *_අදහස එක් පණිවුඩයකින් පහතින්_* _දක්වන්න..._ 🌟  \n\n💬 _Please_ *_share your thoughts_* _about our class or bot below..._ 🏆\n\n🌱 *නව සංවාදයක් ආරම්භ කිරීමට _Hello_ ලෙස යොදන්න...*  \n\n_සුභ දවසක්..._ ☀️";
 const txt17 = "✍️ *Contact Us...*  \n\n• *_Leadway WhatsApp_* - 0717430420 💬  \n• *_Leadway Payment_* - 0711497576 💵  \n• *_Leadway Bot_* - 0784892024 👾  \n• *_Leadway Nugegoda_*- https://g.co/kgs/NJrHp26 🗺️  \n• *_Leadway Email_* - leadway.edu@gmail.com 📧  \n• *_Our Website_* - http://www.leadway.lk 🌐";
 const txt18 = "⚠️ _*Input Error*_\n\n_ප්‍රධාන මෙනුවට පිවිසීම සඳහා *'#'* ඇතුළත් කරන්න..._";
-const txt19 = '';  
-const txt20 = '';  
+const txt19 = '✅ _Agent Function is disabled for all users..._';  
+const txt20 = '❌ _No user is using Agent Function..._';
+const txt21 = '♻️ _Bot is restarting..._';
+const txt22 = '';
+const txt23 = '';
+const txt24 = '';
+const txt25 = '';
+
 
 // DO NOT CHANGE NO MATTER WHAT: Variables for Descriptions
 const dsc1 = "";  // Eng Bs  
@@ -174,7 +180,7 @@ module.exports = {
     img16, img17, img18, img19, img20, img21, img22, img23, img24, img25, img26, img27, img28, img29, img30,
 
     txt1, txt2, txt3, txt4, txt5, txt6, txt7, txt8, txt9, txt10, txt11, txt12, txt13, txt14, txt15, 
-    txt16, txt17, txt18, txt19, txt20,
+    txt16, txt17, txt18, txt19, txt20, txt21, txt22, txt23, txt24, txt25,
 
     dsc1, dsc2, dsc3, dsc4, dsc5, dsc6, dsc7, dsc8, dsc9, dsc10, 
     dsc11, dsc12, dsc13, dsc14, dsc15, dsc16, dsc17, dsc18, dsc19, dsc20,

@@ -7,7 +7,7 @@ const {
     img16, img17, img18, img19, img20, img21, img22, img23, img24, img25, img26, img27, img28, img29, img30,
     
     txt1, txt2, txt3, txt4, txt5, txt6, txt7, txt8, txt9, txt10, txt11, txt12, txt13, txt14, txt15, 
-    txt16, txt17, txt18, txt19, txt20,
+    txt16, txt17, txt18, txt19, txt20, txt21, txt22, txt23, txt24, txt25,
     
     dsc1, dsc2, dsc3, dsc4, dsc5, dsc6, dsc7, dsc8, dsc9, dsc10, 
     dsc11, dsc12, dsc13, dsc14, dsc15, dsc16, dsc17, dsc18, dsc19, dsc20,
@@ -49,8 +49,8 @@ client.on('message', async (message) => {
     
     // Set the bot owner numbers
     const ownerNumbers = ["94717430420@c.us", "94784892024@c.us"];
-    const isOwner = ownerNumbers.includes(userId);
-
+    const isOwner = (userId) => ownerNumbers.includes(userId);
+    
     // Log only if the owner is messaging
     if (isOwner) {
         console.log(`\n📩 Owner is messaging...`);
@@ -213,9 +213,54 @@ client.on('message', async (message) => {
     };        
     
     const greetings = ["hi", "hello", "hey", "helo", "ayubowan", "ආයුබොවන්", "ආයුබෝවන්", "#"];
-
+    const agentTriggers = ["agent", "Agent", "ඒජන්ට්", "එජනට"];
+    const cancelTriggers = ["cancel", "Cancel", "කැන්සල්", "cancal"];
+    
     if (!userSession[userId]) {
-        userSession[userId] = { menu: null };  // Track user's current menu state
+        userSession[userId] = { menu: null, inputCount: 0, agentActive: false };  // Track user's current menu state
+    }
+    
+    if (agentTriggers.includes(text)) {
+        userSession[userId].agentActive = true; // Activate agent mode
+        userSession[userId].inputCount = 0; // Reset input count
+        await sendMessage("txt5"); // Show txt5 message
+        return;
+    }
+    
+    // **Owner Cancels Agent Mode for Everyone**
+    if (text === ".cancel" && isOwner(userId)) {
+        let activeUsers = Object.keys(userSession).filter(id => userSession[id].agentActive);
+    
+        if (activeUsers.length === 0) {
+            await sendMessage("txt20");
+            userSession[userId].menu = null;
+        } else {
+            await sendMessage("txt19");
+            activeUsers.forEach(id => {
+                userSession[id].agentActive = false;
+                userSession[id].inputCount = 0;
+                userSession[userId].menu = null;
+            });            
+        }
+        return;
+    }
+    
+    // **If User is in Agent Mode, Ignore All Messages Except Cancel & Every 5th Input**
+    if (userSession[userId].agentActive) {
+        if (cancelTriggers.includes(text)) {
+            await sendMessage("txt11"); // Send cancel confirmation message
+            userSession[userId].agentActive = false; // Deactivate agent mode for this user
+            userSession[userId].menu = null;
+            return;
+        }
+    
+        // Track User Inputs & Send txt10 Every 5 Inputs
+        userSession[userId].inputCount += 1;
+        if (userSession[userId].inputCount % 5 === 0) {
+            await sendMessage("txt10"); // Send txt10 every 5th input
+        }
+    
+        return; // Ignore all other messages while agent mode is active
     }
     
     if (greetings.includes(text)) {
@@ -262,7 +307,7 @@ client.on('message', async (message) => {
     
             case "6": case "06": case "six": case "හය":
                 await redirectMenu("mn5");
-                userSession[userId].menu = "mn3";  // Move to mn3
+                userSession[userId].menu = "mn5";  // Move to mn5
                 return;
     
             case "7": case "07": case "seven": case "හත":
@@ -396,16 +441,63 @@ client.on('message', async (message) => {
     // **mn5 Menu Handling**
     if (userSession[userId].menu === "mn5") {
         switch (text) {
-            case "1":
-                await sendMessage('You selected option 1 in mn5');
+            case "1": case "01": case "one": case "එක":
+                userSession[userId].agentActive = true;  // Activate agent mode
+                userSession[userId].inputCount = 0;  // Reset input count
+                await sendMessage("txt5"); // Notify user they entered agent mode
+                return;            
+    
+            case "2": case "02": case "two": case "දෙක":
+                await sendMessage('txt6');
+                console.log(`Bot Output: txt6`);
+                userSession[userId].menu = null;  // Reset session
                 return;
     
-            case "2":
-                await sendMessage('You selected option 2 in mn5');
+            case "3": case "03": case "three": case "තුන":
+                await sendMessage('txt21');
+                console.log(`Bot Output: txt21`);
+                userSession[userId].menu = null;  // Reset session
                 return;
-    
+            
+            case "4": case "04": case "four": case "හතර":
+                await client.sendMessage(message.from, MessageMedia.fromFilePath(img25), { caption: txt2 });
+                console.log(`Bot Output: img25, img26, img27, txt9, txt4`);
+                userSession[userId].menu = null;  // Reset session
+                return;
+
+            case "5": case "05": case "five": case "පහ":
+                await sendMessage('txt7');
+                userSession[userId].waitingForInput = "waitingForInput";
+
+                // Listen for any user input, no matter what it is
+                client.once('message', async (newMessage) => {
+                    if (newMessage.from === message.from) {
+                        // Ignore the actual content and treat the input as 'feedback'
+                        const feedback = "feedback";  // Always treat input as "feedback"
+            
+                        // React with a heart emoji regardless of what the user typed
+                        await newMessage.react('❤️');
+            
+                        // Send the next message (txt8)
+                        await sendMessage('txt8');
+                        
+                        // Reset session and clear the waiting state
+                        userSession[userId].menu = null;
+                        userSession[userId].waitingForInput = null;
+                    }
+                });           
+                return;  
+                
+            case "6": case "06": case "six": case "හය":
+                await sendMessage('txt17');
+                console.log(`Bot Output: txt17`);
+                userSession[userId].menu = null;  // Reset session
+                return;
+   
             default:
-                await error();
+                if (userSession[userId].waitingForInput !== "waitingForInput") {
+                    await error();
+                }
                 return;
         }
     }
@@ -461,7 +553,10 @@ client.on('message', async (message) => {
             return;
         }
     }
-
+    else {
+        await error(); // Handle any unexpected input with an error message
+        return;
+    }
 });
 
 client.initialize();
