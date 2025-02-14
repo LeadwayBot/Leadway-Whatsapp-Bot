@@ -555,7 +555,7 @@ client.on('message', async (message) => {
     }
     else {
         await error(); // Handle any unexpected input with an error message
-        retun;
+        return;
     }
 });
 
